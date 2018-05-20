@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">MiiCoin</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <!--<string name="dialog_action_cancel">Cancel</string>-->
+    <string name="dialog_error_title">Sorry</string>
+
+    <!-- Error View -->
+    <string name="error_title">Oops</string>
+    <string name="error_message">There was a problem loading the cryto, please try again!</string>
+    <string name="error_reload">Reload</string>
+    <string name="title_activity_maps_sample">Map</string>
+    <string name="error_something_bad_happened">Something bad happened. Please try again.</string>
+
+    <!-- Search View -->
+    <string name="search">Search</string>
+    <string name="title_activity_miicoin">MiiCoin</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="currency_array">
+        <item>USD</item>
+        <item>AUD</item>
+        <item>BRL</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>CLP</item>
+        <item>CNY</item>
+        <item>CZK</item>
+        <item>DKK</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>HKD</item>
+        <item>HUF</item>
+        <item>IDR</item>
+        <item>ILS</item>
+        <item>INR</item>
+        <item>JPY</item>
+        <item>KRW</item>
+        <item>MXN</item>
+        <item>MYR</item>
+        <item>NOK</item>
+        <item>NZD</item>
+        <item>PHP</item>
+        <item>PKR</item>
+        <item>PLN</item>
+        <item>RUB</item>
+        <item>SEK</item>
+        <item>SGD</item>
+        <item>THB</item>
+        <item>TRY</item>
+        <item>TWD</item>
+        <item>ZAR</item>
+        <item>BTC</item>
+        <item>ETH</item>
+        <item>XRP</item>
+        <item>LTC</item>
+        <item>BCH</item>
+    </string-array>
+</resources>
