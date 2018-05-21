@@ -23,11 +23,11 @@ public class MainPresenter extends BasePresenter<MainCryptoView> {
         super.attachView(mvpView);
     }
 
-    public void getCrypto(int start, int limit, PreferencesHelper preferencesHelper) {
+    public void getCrypto(int limit, PreferencesHelper preferencesHelper) {
         checkViewAttached();
         getView().showProgress(true);
         dataManager
-                .getCryptoList(start, limit, preferencesHelper)
+                .getAllCoins(limit, preferencesHelper)
                 .compose(SchedulerUtils.ioToMain())
                 .subscribe(
                         cryptoSummary -> {

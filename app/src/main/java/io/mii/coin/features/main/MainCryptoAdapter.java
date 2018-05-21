@@ -179,7 +179,7 @@ public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.Cr
                 iconImage.setImageResource(drawableId);
             }
             catch (Exception e) {
-                Log.e("MyTag", "Failure to get drawable id.", e);
+                Log.e("ICON", "Failure to get drawable id.", e);
             }
 
             priceText.setText(mCurrencyFormat.format(crypto.price));
