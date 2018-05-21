@@ -1,13 +1,12 @@
-package io.mii.coin.features.favorite;
+package io.mii.coin.features.main;
+
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -27,15 +26,7 @@ import io.mii.coin.injection.component.FragmentComponent;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FavoriteFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FavoriteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FavoriteFragment extends BaseFragment implements FavoriteCryptoView, ErrorView.ErrorListener {
+public class FavoriteFragment extends BaseFragment implements MainCryptoView, ErrorView.ErrorListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,15 +36,15 @@ public class FavoriteFragment extends BaseFragment implements FavoriteCryptoView
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private io.mii.coin.features.main.FavoriteFragment.OnFragmentInteractionListener mListener;
 
 
     private static final int CRYPTO_LIMIT = 20;
 
     @Inject
-    FavoriteCryptoAdapter favoriteCryptoAdapter;
+    MainCryptoAdapter favoriteCryptoAdapter;
     @Inject
-    FavoritePresenter favoritePresenter;
+    MainPresenter favoritePresenter;
 
     @BindView(R.id.view_error)
     ErrorView errorView;
@@ -105,14 +96,14 @@ public class FavoriteFragment extends BaseFragment implements FavoriteCryptoView
         mPreferencesHelper = new PreferencesHelper(getActivity().getApplicationContext());
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
         swipeRefreshLayout.setColorSchemeResources(R.color.white);
-        swipeRefreshLayout.setOnRefreshListener(() -> favoritePresenter.getCrypto(CRYPTO_LIMIT, mPreferencesHelper));
+        swipeRefreshLayout.setOnRefreshListener(() -> favoritePresenter.getFavorites(CRYPTO_LIMIT, mPreferencesHelper));
 
         cryptoRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cryptoRecycler.setAdapter(favoriteCryptoAdapter);
 
         errorView.setErrorListener(this);
 
-        favoritePresenter.getCrypto(CRYPTO_LIMIT, mPreferencesHelper);
+        favoritePresenter.getFavorites(CRYPTO_LIMIT, mPreferencesHelper);
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -194,7 +185,7 @@ public class FavoriteFragment extends BaseFragment implements FavoriteCryptoView
 
     @Override
     public void onReloadData() {
-        favoritePresenter.getCrypto(CRYPTO_LIMIT, mPreferencesHelper);
+        favoritePresenter.getFavorites(CRYPTO_LIMIT, mPreferencesHelper);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -207,8 +198,8 @@ public class FavoriteFragment extends BaseFragment implements FavoriteCryptoView
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof FavoriteFragment.OnFragmentInteractionListener) {
+            mListener = (FavoriteFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

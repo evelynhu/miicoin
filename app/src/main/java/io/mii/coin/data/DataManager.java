@@ -4,14 +4,11 @@ import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.mii.coin.Constants;
 import io.mii.coin.data.local.PreferencesHelper;
 import io.mii.coin.data.model.present.CryptoDetail;
 import io.mii.coin.data.model.present.CryptoSummary;
@@ -61,27 +58,7 @@ public class DataManager {
 
     public Single<List<CryptoSummary>> getFavoriteList(int limit, PreferencesHelper preferencesHelper) {
         List<CryptoSummary> favorites = preferencesHelper.getFavorites();
-
-        return coinService
-                .getTickerList(null, null, null)
-                .map(res -> new ArrayList<>(res.data.values()))
-                .toObservable()
-                .flatMapIterable(namedResource -> namedResource)
-                .map(namedResource -> {
-                    Quote quote = namedResource.quotes.get("USD");
-
-                    return new CryptoSummary(
-                            namedResource.id,
-                            namedResource.name,
-                            namedResource.symbol,
-                            namedResource.rank,
-                            quote.price,
-                            quote.percentChange24h,
-                            true
-                    );
-                })
-                .filter(namedResource -> preferencesHelper.isFavorite(favorites, namedResource.id))
-                .toList();
+        return Single.fromObservable(Observable.just(favorites));
     }
 
     public Single<List<String>> getCoinList(int limit) {
@@ -93,8 +70,8 @@ public class DataManager {
                 .toList();
     }
 
+    @SuppressLint("CheckResult")
     public Single<CryptoDetail> getExchangeRates(String id, String currencyCode) {
-        // TODO convert to all currencies
         return coinService
                 .getExchangeRates(id, currencyCode)
                 .map(res -> {
@@ -123,7 +100,7 @@ public class DataManager {
     public Single<List<CryptoSummary>> getAllCoins(int limit, PreferencesHelper preferencesHelper) {
         List<CryptoSummary> favorites = preferencesHelper.getFavorites();
 
-        return Observable.range(0, 16)
+        return Observable.range(0, 1)
                 .map(count -> count * limit + 1)
                 .toList()
                 .flatMap(starts -> {

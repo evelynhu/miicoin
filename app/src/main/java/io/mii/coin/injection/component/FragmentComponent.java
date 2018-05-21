@@ -1,7 +1,7 @@
 package io.mii.coin.injection.component;
 
 import dagger.Subcomponent;
-import io.mii.coin.features.favorite.FavoriteFragment;
+import io.mii.coin.features.main.FavoriteFragment;
 import io.mii.coin.features.main.MainFragment;
 import io.mii.coin.injection.PerFragment;
 import io.mii.coin.injection.module.FragmentModule;

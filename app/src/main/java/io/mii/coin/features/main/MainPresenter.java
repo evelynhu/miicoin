@@ -39,4 +39,21 @@ public class MainPresenter extends BasePresenter<MainCryptoView> {
                             getView().showError(throwable);
                         });
     }
+
+    public void getFavorites(int limit, PreferencesHelper preferencesHelper) {
+        checkViewAttached();
+        getView().showProgress(true);
+        dataManager
+                .getFavoriteList(limit, preferencesHelper)
+                .compose(SchedulerUtils.ioToMain())
+                .subscribe(
+                        cryptoSummary -> {
+                            getView().showProgress(false);
+                            getView().showCryptoSummary(cryptoSummary);
+                        },
+                        throwable -> {
+                            getView().showProgress(false);
+                            getView().showError(throwable);
+                        });
+    }
 }

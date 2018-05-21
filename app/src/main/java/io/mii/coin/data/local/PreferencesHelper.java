@@ -74,10 +74,9 @@ public class PreferencesHelper {
 
             favorites = Arrays.asList(favoriteItems);
             favorites = new ArrayList<CryptoSummary>(favorites);
+            return (ArrayList<CryptoSummary>) favorites;
         } else
-            return null;
-
-        return (ArrayList<CryptoSummary>) favorites;
+            return new ArrayList<CryptoSummary>();
     }
 
 

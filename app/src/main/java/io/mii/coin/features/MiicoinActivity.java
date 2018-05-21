@@ -22,7 +22,7 @@ import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
 import io.mii.coin.R;
-import io.mii.coin.features.favorite.FavoriteFragment;
+import io.mii.coin.features.main.FavoriteFragment;
 import io.mii.coin.features.main.MainFragment;
 
 public class MiicoinActivity  extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener, FavoriteFragment.OnFragmentInteractionListener {
