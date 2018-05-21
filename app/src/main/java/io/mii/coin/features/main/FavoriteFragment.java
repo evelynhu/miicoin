@@ -96,14 +96,14 @@ public class FavoriteFragment extends BaseFragment implements MainCryptoView, Er
         mPreferencesHelper = new PreferencesHelper(getActivity().getApplicationContext());
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
         swipeRefreshLayout.setColorSchemeResources(R.color.white);
-        swipeRefreshLayout.setOnRefreshListener(() -> favoritePresenter.getFavorites(CRYPTO_LIMIT, mPreferencesHelper));
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
 
         cryptoRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cryptoRecycler.setAdapter(favoriteCryptoAdapter);
 
         errorView.setErrorListener(this);
 
-        favoritePresenter.getFavorites(CRYPTO_LIMIT, mPreferencesHelper);
+        fetchData();
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -185,6 +185,10 @@ public class FavoriteFragment extends BaseFragment implements MainCryptoView, Er
 
     @Override
     public void onReloadData() {
+        fetchData();
+    }
+
+    private void fetchData() {
         favoritePresenter.getFavorites(CRYPTO_LIMIT, mPreferencesHelper);
     }
 
@@ -225,5 +229,13 @@ public class FavoriteFragment extends BaseFragment implements MainCryptoView, Er
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFavoriteFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            fetchData();
+        }
     }
 }
