@@ -114,14 +114,20 @@ public class MainFragment extends BaseFragment implements MainCryptoView, ErrorV
         mPreferencesHelper = new PreferencesHelper(getActivity().getApplicationContext());
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
         swipeRefreshLayout.setColorSchemeResources(R.color.white);
-        swipeRefreshLayout.setOnRefreshListener(() -> mainPresenter.getCrypto(CRYPTO_LIMIT, mPreferencesHelper));
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
+
+        mainCryptoAdapter.setPreferencesHelper(mPreferencesHelper);
 
         cryptoRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cryptoRecycler.setAdapter(mainCryptoAdapter);
 
         errorView.setErrorListener(this);
 
+        fetchData();
 
+    }
+
+    private void fetchData() {
         mainPresenter.getCrypto(CRYPTO_LIMIT, mPreferencesHelper);
     }
 
@@ -205,7 +211,7 @@ public class MainFragment extends BaseFragment implements MainCryptoView, ErrorV
 
     @Override
     public void onReloadData() {
-        mainPresenter.getCrypto(CRYPTO_LIMIT, mPreferencesHelper);
+        fetchData();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

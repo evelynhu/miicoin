@@ -148,13 +148,7 @@ public class DataManager {
     }
 
     public Single<List<CryptoSummary>> getAllCoinsFromLocal(PreferencesHelper preferencesHelper) {
-        List<CryptoSummary> favorites = preferencesHelper.getSharedPreference(FAVORITES);
         List<CryptoSummary> cryptoList = preferencesHelper.getSharedPreference(ALL);
-        for(CryptoSummary crypto : cryptoList) {
-            if (preferencesHelper.isFavorite(favorites, crypto.id)) {
-                crypto.setCheckStatus(true);
-            }
-        }
         return Single.fromObservable(Observable.just(cryptoList));
     }
 

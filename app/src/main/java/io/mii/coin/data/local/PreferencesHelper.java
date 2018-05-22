@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 
 import io.mii.coin.data.model.present.CryptoSummary;
 
+import static io.mii.coin.Constants.ALL;
 import static io.mii.coin.Constants.FAVORITES;
 
 
@@ -40,7 +41,28 @@ public class PreferencesHelper {
         edit.commit();
     }
 
-    public void addCrypto(String prefKey, CryptoSummary cryptoSummary) {
+    public void addFavorite(CryptoSummary cryptoSummary) {
+        addCrypto(FAVORITES, cryptoSummary);
+        updateCryptoCheckStatus(ALL, cryptoSummary.id, true);
+    }
+
+    public void removeFavorite(CryptoSummary cryptoSummary) {
+        removeCrypto(FAVORITES, cryptoSummary);
+        updateCryptoCheckStatus(ALL, cryptoSummary.id, false);
+    }
+
+    public void updateCryptoCheckStatus(String prefKey, String id, boolean isChecked ) {
+        List<CryptoSummary> cryptoList = getSharedPreference(prefKey);
+        for (CryptoSummary crypto : cryptoList) {
+            if (crypto.id.equals(id)) {
+                crypto.setCheckStatus(isChecked);
+                break;
+            }
+        }
+        saveSharedPreference(prefKey, cryptoList);
+    }
+
+    private void addCrypto(String prefKey, CryptoSummary cryptoSummary) {
         List<CryptoSummary> cryptoList = getSharedPreference(prefKey);
         if (cryptoList == null)
             cryptoList = new ArrayList<CryptoSummary>();
@@ -52,7 +74,7 @@ public class PreferencesHelper {
         saveSharedPreference(prefKey, cryptoList);
     }
 
-    public void removeCrypto(String prefKey, CryptoSummary cryptoSummary) {
+    private void removeCrypto(String prefKey, CryptoSummary cryptoSummary) {
         ArrayList<CryptoSummary> cryptoList = getSharedPreference(prefKey);
         ArrayList<CryptoSummary> newCryptoList = new ArrayList<>();
         if (cryptoList != null) {
@@ -61,7 +83,7 @@ public class PreferencesHelper {
                     newCryptoList.add(crypto);
                 }
             }
-            saveSharedPreference(prefKey, cryptoList);
+            saveSharedPreference(prefKey, newCryptoList);
         }
     }
 

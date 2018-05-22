@@ -98,6 +98,8 @@ public class FavoriteFragment extends BaseFragment implements MainCryptoView, Er
         swipeRefreshLayout.setColorSchemeResources(R.color.white);
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
 
+        favoriteCryptoAdapter.setPreferencesHelper(mPreferencesHelper);
+
         cryptoRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cryptoRecycler.setAdapter(favoriteCryptoAdapter);
 

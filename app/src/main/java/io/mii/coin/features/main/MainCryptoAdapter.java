@@ -39,6 +39,7 @@ public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.Cr
     private List<CryptoSummary> cryptoList;
     private List<CryptoSummary> filteredList;
     private Subject<CryptoSummary> cryptoClickSubject;
+    private PreferencesHelper preferencesHelper;
 
     @Inject
     MainCryptoAdapter() {
@@ -53,12 +54,16 @@ public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.Cr
         notifyDataSetChanged();
     }
 
+    public void setPreferencesHelper(PreferencesHelper preferencesHelper) {
+        this.preferencesHelper = preferencesHelper;
+    }
+
     @Override
     public CryptoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view =
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_crypto, parent, false);
-        return new CryptoViewHolder(view);
+        return new CryptoViewHolder(view, preferencesHelper);
     }
 
     @Override
@@ -138,16 +143,16 @@ public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.Cr
             }
             this.crypto.setCheckStatus(checked);
             if (checked) {
-                mPreferenceHelper.addCrypto(FAVORITES, new CryptoSummary(this.crypto));
+                mPreferenceHelper.addFavorite(new CryptoSummary(this.crypto));
             } else {
-                mPreferenceHelper.removeCrypto(FAVORITES, new CryptoSummary(this.crypto));
+                mPreferenceHelper.removeFavorite(new CryptoSummary(this.crypto));
             }
         }
 
         private CryptoSummary crypto;
         private Context context;
 
-        CryptoViewHolder(View itemView) {
+        CryptoViewHolder(View itemView, PreferencesHelper preferencesHelper) {
             super(itemView);
             this.context = itemView.getContext();
             ButterKnife.bind(this, itemView);
@@ -155,7 +160,7 @@ public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.Cr
             mCurrencyFormat = NumberFormat.getCurrencyInstance();
             mPercentFormat = NumberFormat.getPercentInstance();
             mPercentFormat.setMaximumFractionDigits( 2 );
-            mPreferenceHelper = new PreferencesHelper(this.context);
+            mPreferenceHelper = preferencesHelper;
         }
 
         void onBind(CryptoSummary crypto) {
