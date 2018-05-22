@@ -31,6 +31,8 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
+import static io.mii.coin.Constants.FAVORITES;
+
 @SuppressWarnings("unchecked")
 public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.CryptoViewHolder> implements Filterable {
 
@@ -136,9 +138,9 @@ public class MainCryptoAdapter extends RecyclerView.Adapter<MainCryptoAdapter.Cr
             }
             this.crypto.setCheckStatus(checked);
             if (checked) {
-                mPreferenceHelper.addFavorite(new CryptoSummary(this.crypto));
+                mPreferenceHelper.addCrypto(FAVORITES, new CryptoSummary(this.crypto));
             } else {
-                mPreferenceHelper.removeFavorite(new CryptoSummary(this.crypto));
+                mPreferenceHelper.removeCrypto(FAVORITES, new CryptoSummary(this.crypto));
             }
         }
 

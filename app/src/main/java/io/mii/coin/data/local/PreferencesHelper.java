@@ -13,11 +13,12 @@ import javax.inject.Singleton;
 
 import io.mii.coin.data.model.present.CryptoSummary;
 
+import static io.mii.coin.Constants.FAVORITES;
+
 
 @Singleton
 public class PreferencesHelper {
 
-    public static final String FAVORITES = "CRYPTO_FAVORITE";
     String PREF_FILE_NAME = "MIICOIN";
 
     private static SharedPreferences preferences = null;
@@ -30,51 +31,51 @@ public class PreferencesHelper {
     }
 
     // This four methods are used for maintaining favorites.
-    public void saveFavorites(List<CryptoSummary> favorites) {
+    public void saveSharedPreference(String prefKey, List<CryptoSummary> cryptoList) {
         Gson gson = new Gson();
-        String jsonFavorites = gson.toJson(favorites);
+        String jsonCryptoList = gson.toJson(cryptoList);
         SharedPreferences.Editor edit = preferences.edit();
-        edit.clear();
-        edit.putString(FAVORITES, jsonFavorites);
+//        edit.clear();
+        edit.putString(prefKey, jsonCryptoList);
         edit.commit();
     }
 
-    public void addFavorite(CryptoSummary cryptoSummary) {
-        List<CryptoSummary> favorites = getFavorites();
-        if (favorites == null)
-            favorites = new ArrayList<CryptoSummary>();
+    public void addCrypto(String prefKey, CryptoSummary cryptoSummary) {
+        List<CryptoSummary> cryptoList = getSharedPreference(prefKey);
+        if (cryptoList == null)
+            cryptoList = new ArrayList<CryptoSummary>();
 
-        if (!favorites.contains(cryptoSummary)) {
-          favorites.add(cryptoSummary);
+        if (!cryptoList.contains(cryptoSummary)) {
+            cryptoList.add(cryptoSummary);
         }
 
-        saveFavorites(favorites);
+        saveSharedPreference(prefKey, cryptoList);
     }
 
-    public void removeFavorite(CryptoSummary cryptoSummary) {
-        ArrayList<CryptoSummary> favorites = getFavorites();
-        ArrayList<CryptoSummary> newFavorites = new ArrayList<>();
-        if (favorites != null) {
-            for (CryptoSummary crypto : favorites) {
+    public void removeCrypto(String prefKey, CryptoSummary cryptoSummary) {
+        ArrayList<CryptoSummary> cryptoList = getSharedPreference(prefKey);
+        ArrayList<CryptoSummary> newCryptoList = new ArrayList<>();
+        if (cryptoList != null) {
+            for (CryptoSummary crypto : cryptoList) {
                 if (!crypto.id.equals(cryptoSummary.id)) {
-                    newFavorites.add(crypto);
+                    newCryptoList.add(crypto);
                 }
             }
-            saveFavorites(newFavorites);
+            saveSharedPreference(prefKey, cryptoList);
         }
     }
 
-    public ArrayList<CryptoSummary> getFavorites() {
-        List<CryptoSummary> favorites;
-        if (preferences.contains(FAVORITES)) {
-            String jsonFavorites = preferences.getString(FAVORITES, null);
+    public ArrayList<CryptoSummary> getSharedPreference(String prefKey) {
+        List<CryptoSummary> cryptoList;
+        if (preferences.contains(prefKey)) {
+            String jsonCryptoList = preferences.getString(prefKey, null);
             Gson gson = new Gson();
-            CryptoSummary[] favoriteItems = gson.fromJson(jsonFavorites,
+            CryptoSummary[] cryptoItems = gson.fromJson(jsonCryptoList,
                     CryptoSummary[].class);
 
-            favorites = Arrays.asList(favoriteItems);
-            favorites = new ArrayList<CryptoSummary>(favorites);
-            return (ArrayList<CryptoSummary>) favorites;
+            cryptoList = Arrays.asList(cryptoItems);
+            cryptoList = new ArrayList<CryptoSummary>(cryptoList);
+            return (ArrayList<CryptoSummary>) cryptoList;
         } else
             return new ArrayList<CryptoSummary>();
     }
@@ -93,19 +94,4 @@ public class PreferencesHelper {
         return false;
     }
 
-    public boolean isFavorite(String id) {
-        List<CryptoSummary> favorites = getFavorites();
-
-        if (favorites == null) {
-            return false;
-        }
-
-        for (CryptoSummary crypto : favorites) {
-            if (crypto.id.equals(id)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

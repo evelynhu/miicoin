@@ -19,6 +19,9 @@ import io.mii.coin.data.remote.CoinService;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
+import static io.mii.coin.Constants.ALL;
+import static io.mii.coin.Constants.FAVORITES;
+
 /**
  * Created by evelyn on 10/5/18.
  */
@@ -33,7 +36,7 @@ public class DataManager {
     }
 
     public Single<List<CryptoSummary>> getCryptoList(int start, int limit, PreferencesHelper preferencesHelper) {
-        List<CryptoSummary> favorites = preferencesHelper.getFavorites();
+        List<CryptoSummary> favorites = preferencesHelper.getSharedPreference(FAVORITES);
 
         return coinService
             .getTickerList(start, limit, null)
@@ -57,7 +60,7 @@ public class DataManager {
     }
 
     public Single<List<CryptoSummary>> getFavoriteList(int limit, PreferencesHelper preferencesHelper) {
-        List<CryptoSummary> favorites = preferencesHelper.getFavorites();
+        List<CryptoSummary> favorites = preferencesHelper.getSharedPreference(FAVORITES);
         return Single.fromObservable(Observable.just(favorites));
     }
 
@@ -95,10 +98,17 @@ public class DataManager {
                 });
     }
 
-
     @SuppressLint("CheckResult")
-    public Single<List<CryptoSummary>> getAllCoins(int limit, PreferencesHelper preferencesHelper) {
-        List<CryptoSummary> favorites = preferencesHelper.getFavorites();
+    public Observable<List<CryptoSummary>> getAllCoins(int limit, PreferencesHelper preferencesHelper) {
+
+        return Single.concat(
+                getAllCoinsFromLocal(preferencesHelper),
+                getAllCoinsFromNetWork(limit, preferencesHelper)).toObservable();
+
+    }
+
+    public Single<List<CryptoSummary>> getAllCoinsFromNetWork(int limit, PreferencesHelper preferencesHelper) {
+        List<CryptoSummary> favorites = preferencesHelper.getSharedPreference(FAVORITES);
 
         return Observable.range(0, 1)
                 .map(count -> count * limit + 1)
@@ -107,9 +117,7 @@ public class DataManager {
                     List<Single<List<CryptoSummary>>> observables = new ArrayList<>();
                     for (Integer start : starts) {
                         observables.add(coinService.getTickerList(start, limit, null)
-                                .map(res -> new ArrayList<>(res.data.values()))
-                                .toObservable()
-                                .flatMapIterable(namedResource -> namedResource)
+                                .flatMapObservable(tickerMapResponse -> Observable.fromIterable(tickerMapResponse.data.values()))
                                 .map(namedResource -> {
                                     Quote quote = namedResource.quotes.get("USD");
                                     return new CryptoSummary(
@@ -124,6 +132,7 @@ public class DataManager {
                                 })
                                 .toList());
                     }
+
                     return Single.zip(observables, objects -> {
                         List<CryptoSummary> cryptoSummaries = new ArrayList<>();
                         for (Object data : objects) {
@@ -132,9 +141,21 @@ public class DataManager {
                             }
                         }
                         Collections.sort(cryptoSummaries, (o1, o2) -> o1.rank - o2.rank);
+                        preferencesHelper.saveSharedPreference(ALL, cryptoSummaries);
                         return cryptoSummaries;
                     });
                 });
+    }
+
+    public Single<List<CryptoSummary>> getAllCoinsFromLocal(PreferencesHelper preferencesHelper) {
+        List<CryptoSummary> favorites = preferencesHelper.getSharedPreference(FAVORITES);
+        List<CryptoSummary> cryptoList = preferencesHelper.getSharedPreference(ALL);
+        for(CryptoSummary crypto : cryptoList) {
+            if (preferencesHelper.isFavorite(favorites, crypto.id)) {
+                crypto.setCheckStatus(true);
+            }
+        }
+        return Single.fromObservable(Observable.just(cryptoList));
     }
 
 }

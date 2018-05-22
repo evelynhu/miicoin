@@ -6,6 +6,8 @@ package io.mii.coin;
 public interface Constants {
 
     String PREF_FILE_NAME = "MIICOIN";
+    String FAVORITES = "CRYPTO_FAVORITE";
+    String ALL = "CRYPTO_ALL";
 
     String[] CURRENCY_LIST = new String[] {
             "AUD", "BRL", "CAD", "CHF", "CLP", "CNY", "CZK", "DKK", "EUR",
