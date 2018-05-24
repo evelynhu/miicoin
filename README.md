@@ -2,6 +2,8 @@
 # Miicoin
 An crypto currency rates app using MVP pattern.
 
+![Demo](/demo.gif)
+
 ## This project uses:
 - [CoinMarketCap](https://coinmarketcap.com/api/)
 - [Android MVP Starter](https://github.com/androidstarters/generator-android-mvp-starter)
