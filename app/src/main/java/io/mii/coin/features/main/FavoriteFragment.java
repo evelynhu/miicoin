@@ -118,7 +118,7 @@ public class FavoriteFragment extends BaseFragment implements MainCryptoView, Er
                         .getCryptoClick()
                         .subscribe(
                                 crypto ->
-                                        startActivity(DetailActivity.getStartIntent(getActivity().getApplicationContext(), crypto.name, crypto.id)),
+                                        startActivity(DetailActivity.getStartIntent(getActivity().getApplicationContext(), crypto.name, crypto.id, crypto.symbol)),
                                 throwable -> {
                                     Timber.e(throwable, "Crypto click failed");
                                     Toast.makeText(

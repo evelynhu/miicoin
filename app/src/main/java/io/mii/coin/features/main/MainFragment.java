@@ -142,7 +142,7 @@ public class MainFragment extends BaseFragment implements MainCryptoView, ErrorV
                         .getCryptoClick()
                         .subscribe(
                                 crypto ->
-                                        startActivity(DetailActivity.getStartIntent(getActivity().getApplicationContext(), crypto.name, crypto.id)),
+                                        startActivity(DetailActivity.getStartIntent(getActivity().getApplicationContext(), crypto.name, crypto.id, crypto.symbol)),
                                 throwable -> {
                                     Timber.e(throwable, "Crypto click failed");
                                     Toast.makeText(

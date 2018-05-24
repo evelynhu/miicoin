@@ -34,6 +34,7 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
 
     public static final String EXTRA_CRYPTO_NAME = "EXTRA_CRYPTO_NAME";
     public static final String EXTRA_CRYPTO_ID = "EXTRA_CRYPTO_ID";
+    public static final String EXTRA_CRYPTO_SYMBOL = "EXTRA_CRYPTO_SYMBOL";
 
     @Inject
     DetailPresenter detailPresenter;
@@ -47,11 +48,11 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-//    @BindView(R.id.layout_crypto_detail)
-//    LinearLayout exchangeRateLayout;
-
     @BindView(R.id.text_value)
     TextView value;
+
+    @BindView(R.id.text_symbol)
+    TextView symbol;
 
     @BindView(R.id.layout_crypto)
     View cryptoLayout;
@@ -59,15 +60,17 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
     @BindView(R.id.spinner)
     Spinner spinner;
 
+    private String cryptoSymbol;
     private String cryptoName;
     private String cryptoId;
-    private String currency;
+    private String currency = "USD";
     private NumberFormat mCurrencyFormat;
 
-    public static Intent getStartIntent(Context context, String cryptoName, String cryptoId) {
+    public static Intent getStartIntent(Context context, String cryptoName, String cryptoId, String cryptoSymbol) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(EXTRA_CRYPTO_NAME, cryptoName);
         intent.putExtra(EXTRA_CRYPTO_ID, cryptoId);
+        intent.putExtra(EXTRA_CRYPTO_SYMBOL, cryptoSymbol);
         return intent;
     }
 
@@ -85,6 +88,11 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
             throw new IllegalArgumentException("Detail Activity requires a crypto id@");
         }
 
+        cryptoSymbol = getIntent().getStringExtra(EXTRA_CRYPTO_SYMBOL);
+        if (cryptoSymbol == null) {
+            throw new IllegalArgumentException("Detail Activity requires a crypto symbol@");
+        }
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
@@ -93,26 +101,30 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
         errorView.setErrorListener(this);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.currency_array, android.R.layout.simple_spinner_item);
+                R.array.currency_array, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        detailPresenter.getCrypto(cryptoId, "USD");
+        fetchData();
         mCurrencyFormat = NumberFormat.getCurrencyInstance();
 
+    }
+
+    private void fetchData() {
+        detailPresenter.getCrypto(cryptoId, currency);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         currency = parent.getItemAtPosition(pos).toString();
-        detailPresenter.getCrypto(cryptoId, currency);
+        fetchData();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
-        detailPresenter.getCrypto(cryptoId, "USD");
+        fetchData();
     }
 
     @Override
@@ -137,18 +149,13 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
 
     @Override
     public void showCryptoDetail(CryptoDetail cryptoDetail) {
-//        if (cryto.sprites != null && cryto.sprites.frontDefault != null) {
-//            Glide.with(this).load(cryto.sprites.frontDefault).into(cryptoImage);
-//        }
         cryptoLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showExchangeRates(ExchangeRate exchangeRate) {
-//        ExchangeRateView exchangeRateView = new ExchangeRateView(this);
-//        exchangeRateView.setStat(exchangeRate);
-//        exchangeRateLayout.addView(exchangeRateView);
         value.setText(mCurrencyFormat.format(exchangeRate.price));
+        symbol.setText(cryptoSymbol);
     }
 
     @Override
@@ -166,6 +173,6 @@ public class DetailActivity extends BaseActivity implements DetailCryptoView, Er
 
     @Override
     public void onReloadData() {
-        detailPresenter.getCrypto(cryptoId, currency);
+        fetchData();
     }
 }
