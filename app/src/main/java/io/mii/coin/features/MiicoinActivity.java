@@ -3,7 +3,10 @@ package io.mii.coin.features;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -28,6 +31,8 @@ import io.mii.coin.features.main.FavoriteFragment;
 import io.mii.coin.features.main.MainFragment;
 
 public class MiicoinActivity  extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener, FavoriteFragment.OnFragmentInteractionListener {
+
+    private final int OVERLAY_PERMISSION_REQ_CODE = 1;  // Choose any value
 
     private static final int TABS_COUNT = 2;
     public static final int ALL_TAB_POSITION = 0;
@@ -60,6 +65,7 @@ public class MiicoinActivity  extends AppCompatActivity implements MainFragment.
             public void onClick(View view) {
                 Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                startActivity(new Intent(MiicoinActivity.this, MyReactActivity.class));
             }
         });
 
@@ -75,6 +81,26 @@ public class MiicoinActivity  extends AppCompatActivity implements MainFragment.
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.getTabAt(ALL_TAB_POSITION).setText("ALL");
         mTabLayout.getTabAt(FAVORITA_TAB_POSITION).setText("FAVORITE");
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    // SYSTEM_ALERT_WINDOW permission not granted
+                }
+            }
+        }
     }
 
     @Override
