@@ -4,6 +4,8 @@ package io.mii.coin.features;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.MenuItemCompat;
@@ -32,6 +34,8 @@ public class MiicoinActivity  extends AppCompatActivity implements MainFragment.
     private static final int FAVORITA_TAB_POSITION = 1;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    FloatingActionButton mFab;
+
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -49,6 +53,16 @@ public class MiicoinActivity  extends AppCompatActivity implements MainFragment.
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
