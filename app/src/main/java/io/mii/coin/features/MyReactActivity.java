@@ -2,6 +2,7 @@ package io.mii.coin.features;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 
 import com.facebook.react.common.LifecycleState;
@@ -13,6 +14,7 @@ import com.facebook.react.shell.MainReactPackage;
 import io.mii.coin.BuildConfig;
 
 public class MyReactActivity extends Activity implements DefaultHardwareBackBtnHandler {
+    private static String GREETING = "greeting";
     private ReactRootView mReactRootView;
     private ReactInstanceManager mReactInstanceManager;
 
@@ -31,9 +33,16 @@ public class MyReactActivity extends Activity implements DefaultHardwareBackBtnH
                 .build();
         // The string here (e.g. "MyReactNativeApp") has to match
         // the string in AppRegistry.registerComponent() in index.js
-        mReactRootView.startReactApplication(mReactInstanceManager, "MyReactNativeApp", null);
+        mReactRootView.startReactApplication(mReactInstanceManager, "MyReactNativeApp", getLaunchOptions());
 
         setContentView(mReactRootView);
+    }
+
+    @Nullable
+    protected Bundle getLaunchOptions() {
+        Bundle options = new Bundle();
+        options.putString(GREETING, "Hello Maicoin :)");
+        return options;
     }
 
     @Override
